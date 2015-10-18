@@ -6,8 +6,8 @@
     <string name="action_settings">Settings</string>
     <string-array name="list_items_array">
         <item>Today\'s choice</item>
-        <item>All items</item>
-        <item>Liked</item>
+        <item>All shirts</item>
+        <item>All pants</item>
         <item>Bookmarked</item>
     </string-array>
     <string name="drawer_open">Open navigation drawer</string>

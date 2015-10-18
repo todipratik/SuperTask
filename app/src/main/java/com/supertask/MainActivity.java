@@ -1,6 +1,8 @@
 package com.supertask;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -11,6 +13,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.supertask.fragments.AllShirtPantFragment;
+import com.supertask.fragments.BookmarkedFragment;
+import com.supertask.fragments.TodayChoiceFragment;
 
 public class MainActivity extends Activity implements ListView.OnItemClickListener {
 
@@ -114,6 +120,30 @@ public class MainActivity extends Activity implements ListView.OnItemClickListen
     }
 
     private void selectItem(int position) {
+        Fragment fragment = null;
+        switch (position) {
+            case 0:
+                fragment = new TodayChoiceFragment();
+                break;
+            case 1:
+            case 2:
+                fragment = new AllShirtPantFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt(AllShirtPantFragment.ARG_POSITION, position);
+                fragment.setArguments(bundle);
+                break;
+            case 3:
+                fragment = new BookmarkedFragment();
+                break;
+        }
 
+        if (fragment != null) {
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        }
+
+        drawerList.setItemChecked(position, true);
+        setTitle(optionsList[position]);
+        drawerLayout.closeDrawer(drawerList);
     }
 }
