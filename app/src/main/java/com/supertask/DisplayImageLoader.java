@@ -3,8 +3,6 @@ package com.supertask;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
