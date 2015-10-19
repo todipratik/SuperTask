@@ -12,4 +12,8 @@
     </string-array>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="shirt_not_added_message">Please add a shirt</string>
+    <string name="pant_not_added_message">Please add a pant</string>
+    <string name="no_choice_message">No choices found...\nPlease add few shirts and pants</string>
+    <string name="today_choice_message">Your choice for today</string>
 </resources>

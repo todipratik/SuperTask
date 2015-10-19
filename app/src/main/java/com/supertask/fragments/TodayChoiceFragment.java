@@ -3,12 +3,14 @@ package com.supertask.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,17 +32,21 @@ import java.io.IOException;
  */
 public class TodayChoiceFragment extends Fragment implements View.OnClickListener {
 
-    TextView textView;
-
     static final int REQUEST_TAKE_PHOTO = 1;
     static final int RESULT_LOAD_SHIRT_IMAGE = 2;
     static final int RESULT_LOAD_PANT_IMAGE = 3;
+
+    private static final String TAG = "TodayChoiceFragment";
 
     private FloatingActionsMenu floatingActionsMenu;
     private FloatingActionButton addShirtFromGallery;
     private FloatingActionButton addPantFromGallery;
     private FloatingActionButton clickImageOfShirt;
     private FloatingActionButton clickImageOfPant;
+    private SharedPreferences sharedPreferences;
+    private TextView todayShirtTextView;
+    private TextView todayPantTextView;
+    private TextView todayChoiceMessageTextView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,8 +56,9 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
         addPantFromGallery = (FloatingActionButton) view.findViewById(R.id.add_pant_from_gallery);
         clickImageOfShirt = (FloatingActionButton) view.findViewById(R.id.click_photo_shirt);
         clickImageOfPant = (FloatingActionButton) view.findViewById(R.id.click_photo_pant);
-        textView = (TextView) view.findViewById(R.id.textView);
-        textView.setText("Hey This is your choice for today!!!!");
+        todayChoiceMessageTextView = (TextView) view.findViewById(R.id.today_choice_text_view);
+        todayShirtTextView = (TextView) view.findViewById(R.id.today_shirt_text_view);
+        todayPantTextView = (TextView) view.findViewById(R.id.today_pant_text_view);
 
         addShirtFromGallery.setOnClickListener(this);
         addPantFromGallery.setOnClickListener(this);
@@ -59,6 +66,19 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
         clickImageOfPant.setOnClickListener(this);
 
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        sharedPreferences = Util.getSharedPrefsObject(getActivity());
+        if (sharedPreferences.contains(Util.KEY_CHOICE_SET)) {
+            // keys exists
+            if (sharedPreferences.getBoolean(Util.KEY_CHOICE_SET, false)) {
+                displayImageChoiceForToday();
+            }
+
+        }
     }
 
     @Override
@@ -80,6 +100,7 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
                 dispatchTakePictureIntent(Util.getFileNameForPant());
                 break;
         }
+        floatingActionsMenu.collapse();
     }
 
     @Override
@@ -119,6 +140,16 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
                 e.printStackTrace();
             }
         }
+        // if the result was OK, set the alarm
+        if (resultCode == Activity.RESULT_OK) {
+            Util.setAlarm(getActivity());
+            if (sharedPreferences == null)
+                Util.getSharedPrefsObject(getActivity());
+            if (!sharedPreferences.getBoolean(Util.KEY_CHOICE_SET, false)) {
+                Util.setImageChoiceForToday(getActivity());
+                displayImageChoiceForToday();
+            }
+        }
     }
 
     private void dispatchTakePictureIntent(String imageFileName) {
@@ -142,5 +173,20 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
         File storageDir = Util.getPathToStorage(getActivity());
         File image = File.createTempFile(imageFileName, ".jpg", storageDir);
         return image;
+    }
+
+    private void displayImageChoiceForToday() {
+        todayChoiceMessageTextView.setText(R.string.today_choice_message);
+        if (sharedPreferences.getBoolean(Util.KEY_SHIRT_PRESENT, false)) {
+            String path = sharedPreferences.getString(Util.KEY_SHIRT_PATH, "");
+            Log.d(TAG, path);
+            todayShirtTextView.setText(path);
+        }
+        if (sharedPreferences.getBoolean(Util.KEY_PANT_PRESENT, false)) {
+            String path = sharedPreferences.getString(Util.KEY_PANT_PATH, "");
+            Log.d(TAG, path);
+            todayPantTextView.setText(path);
+        }
+        return;
     }
 }
