@@ -64,12 +64,14 @@ public class BookmarkDbHelper extends SQLiteOpenHelper {
         return false;
     }
 
-    public Integer deleteBookmark(Integer id) {
+    public Integer deleteBookmark(Bookmark bookmark) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         return sqLiteDatabase.delete(
                 TABLE_NAME,
-                "id = ? ",
-                new String[]{Integer.toString(id)});
+                COLUMN_NAME_SHIRT + " = ? AND " + COLUMN_NAME_PANT + " = ?",
+                new String[]{
+                        bookmark.getShirt(), bookmark.getPant()
+                });
     }
 
     public ArrayList<Bookmark> getAllBookmark() {

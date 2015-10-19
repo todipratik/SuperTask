@@ -20,6 +20,8 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.supertask.Bookmark;
+import com.supertask.BookmarkDbHelper;
 import com.supertask.R;
 import com.supertask.Util;
 
@@ -75,6 +77,7 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
         addPantFromGallery.setOnClickListener(this);
         clickImageOfShirt.setOnClickListener(this);
         clickImageOfPant.setOnClickListener(this);
+        bookmark.setOnClickListener(this);
 
         return view;
     }
@@ -99,19 +102,45 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
             case R.id.add_shirt_from_gallery:
                 intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, RESULT_LOAD_SHIRT_IMAGE);
+                floatingActionsMenu.collapse();
                 break;
             case R.id.add_pant_from_gallery:
                 intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, RESULT_LOAD_PANT_IMAGE);
+                floatingActionsMenu.collapse();
                 break;
             case R.id.click_photo_shirt:
                 dispatchTakePictureIntent(Util.getFileNameForShirt());
+                floatingActionsMenu.collapse();
                 break;
             case R.id.click_photo_pant:
                 dispatchTakePictureIntent(Util.getFileNameForPant());
+                floatingActionsMenu.collapse();
+                break;
+            case R.id.bookmark:
+                if (sharedPreferences == null)
+                    sharedPreferences = Util.getSharedPrefsObject(getActivity());
+                Boolean bookmarked = sharedPreferences.getBoolean(Util.KEY_BOOKMARKED, false);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                BookmarkDbHelper bookmarkDbHelper = new BookmarkDbHelper(getActivity());
+                if (bookmarked) {
+                    // already bookmarked
+                    // remove bookmark from database and update in shared prefs
+                    Bookmark b = new Bookmark(shirtPath, pantPath);
+                    bookmarkDbHelper.deleteBookmark(b);
+                    editor.putBoolean(Util.KEY_BOOKMARKED, false);
+                    bookmark.setBackgroundResource(android.R.color.transparent);
+                } else {
+                    // bookmark it, i.e. update in shared prefs and database
+                    Bookmark b = new Bookmark(shirtPath, pantPath);
+                    bookmarkDbHelper.insertBookmark(b);
+                    editor.putBoolean(Util.KEY_BOOKMARKED, true);
+                    bookmark.setBackgroundResource(R.color.yellow);
+                }
+                editor.commit();
                 break;
         }
-        floatingActionsMenu.collapse();
+
     }
 
     @Override
