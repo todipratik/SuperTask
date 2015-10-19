@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,13 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
     private TextView todayShirtTextView;
     private TextView todayPantTextView;
     private TextView todayChoiceMessageTextView;
+    private ImageView todayShirtImageView;
+    private ImageView todayPantImageView;
+    private ImageView bookmark;
+    private BitmapFactory.Options options;
+
+    private String shirtPath;
+    private String pantPath;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,6 +67,9 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
         todayChoiceMessageTextView = (TextView) view.findViewById(R.id.today_choice_text_view);
         todayShirtTextView = (TextView) view.findViewById(R.id.today_shirt_text_view);
         todayPantTextView = (TextView) view.findViewById(R.id.today_pant_text_view);
+        todayShirtImageView = (ImageView) view.findViewById(R.id.today_shirt_image_view);
+        todayPantImageView = (ImageView) view.findViewById(R.id.today_pant_image_view);
+        bookmark = (ImageView) view.findViewById(R.id.bookmark);
 
         addShirtFromGallery.setOnClickListener(this);
         addPantFromGallery.setOnClickListener(this);
@@ -177,15 +188,40 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
 
     private void displayImageChoiceForToday() {
         todayChoiceMessageTextView.setText(R.string.today_choice_message);
+        options = new BitmapFactory.Options();
+        options.inSampleSize = 16;
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
         if (sharedPreferences.getBoolean(Util.KEY_SHIRT_PRESENT, false)) {
-            String path = sharedPreferences.getString(Util.KEY_SHIRT_PATH, "");
-            Log.d(TAG, path);
-            todayShirtTextView.setText(path);
+            shirtPath = sharedPreferences.getString(Util.KEY_SHIRT_PATH, "");
+            Log.d(TAG, shirtPath);
+            todayShirtTextView.setVisibility(View.INVISIBLE);
+            todayShirtImageView.setVisibility(View.VISIBLE);
+            Bitmap bitmap = BitmapFactory.decodeFile(shirtPath, options);
+            todayShirtImageView.setImageBitmap(bitmap);
+        } else {
+            todayShirtImageView.setVisibility(View.INVISIBLE);
+            bookmark.setVisibility(View.GONE);
+            todayShirtTextView.setText(R.string.shirt_not_added_message);
+            todayShirtTextView.setVisibility(View.VISIBLE);
         }
         if (sharedPreferences.getBoolean(Util.KEY_PANT_PRESENT, false)) {
-            String path = sharedPreferences.getString(Util.KEY_PANT_PATH, "");
-            Log.d(TAG, path);
-            todayPantTextView.setText(path);
+            pantPath = sharedPreferences.getString(Util.KEY_PANT_PATH, "");
+            Log.d(TAG, pantPath);
+            todayPantTextView.setVisibility(View.INVISIBLE);
+            todayPantImageView.setVisibility(View.VISIBLE);
+            Bitmap bitmap = BitmapFactory.decodeFile(pantPath, options);
+            todayPantImageView.setImageBitmap(bitmap);
+        } else {
+            todayPantImageView.setVisibility(View.INVISIBLE);
+            bookmark.setVisibility(View.GONE);
+            todayPantTextView.setText(R.string.pant_not_added_message);
+            todayPantTextView.setVisibility(View.VISIBLE);
+        }
+        if (!shirtPath.equals("") && !pantPath.equals("")) {
+            bookmark.setVisibility(View.VISIBLE);
+            if (sharedPreferences.getBoolean(Util.KEY_BOOKMARKED, false)) {
+                bookmark.setBackgroundResource(R.color.yellow);
+            }
         }
         return;
     }
