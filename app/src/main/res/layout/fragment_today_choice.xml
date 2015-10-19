@@ -15,13 +15,14 @@
         android:text="@string/no_choice_message" />
 
     <LinearLayout
+        android:id="@+id/today_choice_image_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/today_choice_text_view"
         android:layout_margin="5dp"
         android:orientation="horizontal"
         android:padding="3dp"
-        android:visibility="gone">
+        android:visibility="invisible">
 
         <ImageView
             android:id="@+id/today_shirt_image_view"
@@ -38,6 +39,15 @@
             android:padding="3dp" />
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/bookmark"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignRight="@id/today_choice_image_view"
+        android:layout_alignTop="@id/today_choice_image_view"
+        android:src="@drawable/bookmark"
+        android:visibility="invisible" />
 
     <LinearLayout
         android:layout_width="match_parent"
