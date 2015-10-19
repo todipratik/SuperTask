@@ -13,26 +13,19 @@ import java.util.List;
 public class DisplayImageLoader extends AsyncTaskLoader<List<String>> {
 
     private Context context;
+    private Integer position;
 
-    public DisplayImageLoader(Context context) {
+    public DisplayImageLoader(Context context, Integer position) {
         super(context);
         this.context = context;
+        this.position = position;
     }
 
     @Override
     public List<String> loadInBackground() {
-        File file = Util.getPathToStorage(context);
-        List<String> pathOfImageFiles = new ArrayList<>();
-        File[] allFiles = file.listFiles();
-        long index = 0;
-        while (index < allFiles.length) {
-            File f = allFiles[((int) index)];
-            if (f.length() > 0) {
-                String path = f.getAbsolutePath();
-                pathOfImageFiles.add(path);
-            }
-            index++;
+        if (position == 1) {
+            return Util.getAllShirtPaths(context);
         }
-        return pathOfImageFiles;
+        return Util.getAllPantPaths(context);
     }
 }

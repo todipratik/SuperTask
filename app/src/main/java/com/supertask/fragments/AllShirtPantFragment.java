@@ -38,7 +38,7 @@ public class AllShirtPantFragment extends Fragment implements LoaderManager.Load
         View view = inflater.inflate(R.layout.fragment_all_shirt_pant, container, false);
         imageGridView = (GridView) view.findViewById(R.id.images_grid_view);
         pathOfImageFiles = new ArrayList<>();
-//        position = getArguments().getInt(ARG_POSITION);
+        position = getArguments().getInt(ARG_POSITION);
         return view;
     }
 
@@ -52,7 +52,7 @@ public class AllShirtPantFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public Loader<List<String>> onCreateLoader(int i, Bundle bundle) {
-        return new DisplayImageLoader(getActivity());
+        return new DisplayImageLoader(getActivity(), position);
     }
 
     @Override
