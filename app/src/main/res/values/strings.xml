@@ -16,4 +16,5 @@
     <string name="pant_not_added_message">Please add a pant</string>
     <string name="no_choice_message">No choices found...\nPlease add few shirts and pants</string>
     <string name="today_choice_message">Your choice for today</string>
+    <string name="no_bookmark_message">No bookmarks found!!!</string>
 </resources>
