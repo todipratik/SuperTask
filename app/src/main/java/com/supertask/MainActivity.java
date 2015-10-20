@@ -3,6 +3,7 @@ package com.supertask;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -144,5 +145,13 @@ public class MainActivity extends Activity implements ListView.OnItemClickListen
         drawerList.setItemChecked(position, true);
         setTitle(optionsList[position]);
         drawerLayout.closeDrawer(drawerList);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent setIntent = new Intent(Intent.ACTION_MAIN);
+        setIntent.addCategory(Intent.CATEGORY_HOME);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(setIntent);
     }
 }
