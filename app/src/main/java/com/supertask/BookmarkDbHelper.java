@@ -78,12 +78,15 @@ public class BookmarkDbHelper extends SQLiteOpenHelper {
         ArrayList<Bookmark> list = new ArrayList<>();
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery(SQL_SELECT_ALL_TABLE_BOOKMARK, null);
-        while (cursor.isAfterLast() == false) {
-            String shirt = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SHIRT));
-            String pant = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_PANT));
-            Bookmark bookmark = new Bookmark(shirt, pant);
-            list.add(bookmark);
-            cursor.moveToNext();
+        if (cursor == null || cursor.getCount() == 0)
+            return list;
+        if (cursor.moveToFirst()) {
+            do {
+                String shirt = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SHIRT));
+                String pant = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_PANT));
+                Bookmark bookmark = new Bookmark(shirt, pant);
+                list.add(bookmark);
+            } while (cursor.moveToNext());
         }
         return list;
     }

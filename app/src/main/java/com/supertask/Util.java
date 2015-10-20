@@ -89,23 +89,34 @@ public class Util {
         if (shirts.size() == 0 && pants.size() == 0) {
             return;
         }
+        String shirtPath = "";
+        String pantPath = "";
         SharedPreferences sharedPreferences = getSharedPrefsObject(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         if (shirts.size() > 0) {
             Integer randomNumber = randomNumber(0, shirts.size() - 1);
-            String path = shirts.get(randomNumber);
+            shirtPath = shirts.get(randomNumber);
             editor.putBoolean(KEY_CHOICE_SET, true);
             editor.putBoolean(KEY_SHIRT_PRESENT, true);
-            editor.putString(KEY_SHIRT_PATH, path);
+            editor.putString(KEY_SHIRT_PATH, shirtPath);
         }
         if (pants.size() > 0) {
             Integer randomNumber = randomNumber(0, pants.size() - 1);
-            String path = pants.get(randomNumber);
+            pantPath = pants.get(randomNumber);
             editor.putBoolean(KEY_CHOICE_SET, true);
             editor.putBoolean(KEY_PANT_PRESENT, true);
-            editor.putString(KEY_PANT_PATH, path);
+            editor.putString(KEY_PANT_PATH, pantPath);
         }
-        editor.putBoolean(KEY_BOOKMARKED, false);
+        Boolean bookmarked;
+        if (!shirtPath.equals("") && !pantPath.equals("")) {
+            Bookmark bookmark = new Bookmark(shirtPath, pantPath);
+            BookmarkDbHelper bookmarkDbHelper = new BookmarkDbHelper(context);
+            Integer id = bookmarkDbHelper.getIdOfBookmark(bookmark);
+            bookmarked = id > 0 ? true : false;
+        } else {
+            bookmarked = false;
+        }
+        editor.putBoolean(KEY_BOOKMARKED, bookmarked);
         editor.commit();
     }
 
