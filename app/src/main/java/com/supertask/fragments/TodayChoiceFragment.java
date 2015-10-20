@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by pratik on 18/10/15.
@@ -59,6 +60,7 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
     private ImageView todayPantImageView;
     private ImageView bookmark;
     private ImageView dislike;
+    private ImageView share;
     private ImageLoader imageLoader;
 
     private String shirtPath;
@@ -79,6 +81,7 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
         todayPantImageView = (ImageView) view.findViewById(R.id.today_pant_image_view);
         bookmark = (ImageView) view.findViewById(R.id.bookmark);
         dislike = (ImageView) view.findViewById(R.id.dislike);
+        share = (ImageView) view.findViewById(R.id.share);
 
         addShirtFromGallery.setOnClickListener(this);
         addPantFromGallery.setOnClickListener(this);
@@ -86,7 +89,7 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
         clickImageOfPant.setOnClickListener(this);
         bookmark.setOnClickListener(this);
         dislike.setOnClickListener(this);
-
+        share.setOnClickListener(this);
         return view;
     }
 
@@ -151,6 +154,17 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
                 Util.setImageChoiceForToday(getActivity());
                 displayImageChoiceForToday();
                 bookmark.setBackgroundResource(android.R.color.transparent);
+                break;
+            case R.id.share:
+                ArrayList<Uri> imageUris = new ArrayList<Uri>();
+                imageUris.add(Uri.parse("file://" + shirtPath));
+                imageUris.add(Uri.parse("file://" + pantPath));
+
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
+                shareIntent.setType("image/*");
+                startActivity(Intent.createChooser(shareIntent, "Share today's choice with..."));
                 break;
         }
 
@@ -270,6 +284,7 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
         if (!shirtPath.equals("") && !pantPath.equals("")) {
             bookmark.setVisibility(View.VISIBLE);
             dislike.setVisibility(View.VISIBLE);
+            share.setVisibility(View.VISIBLE);
             if (sharedPreferences.getBoolean(Util.KEY_BOOKMARKED, false)) {
                 bookmark.setBackgroundResource(R.color.yellow);
             }
