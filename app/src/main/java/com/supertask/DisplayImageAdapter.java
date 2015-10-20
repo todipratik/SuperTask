@@ -2,12 +2,17 @@ package com.supertask;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import java.util.List;
 
@@ -18,15 +23,25 @@ public class DisplayImageAdapter extends ArrayAdapter<String> {
 
     private Context context;
     private List<String> pathOfImageFiles;
-    private BitmapFactory.Options options;
+    private ImageLoader imageLoader;
 
     public DisplayImageAdapter(Context context, List<String> pathOfImageFiles) {
         super(context, R.layout.display_image_item, pathOfImageFiles);
         this.context = context;
         this.pathOfImageFiles = pathOfImageFiles;
-        options = new BitmapFactory.Options();
-        options.inSampleSize = 16;
-        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        imageLoader = ImageLoader.getInstance();
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
+                context).threadPriority(Thread.NORM_PRIORITY - 2)
+                .denyCacheImageMultipleSizesInMemory()
+                .defaultDisplayImageOptions(options)
+                .discCacheFileNameGenerator(new Md5FileNameGenerator())
+                .tasksProcessingOrder(QueueProcessingType.LIFO).build();
+        imageLoader.init(config);
     }
 
     @Override
@@ -41,8 +56,8 @@ public class DisplayImageAdapter extends ArrayAdapter<String> {
         }
         ViewHolder holder = (ViewHolder) view.getTag();
         String string = pathOfImageFiles.get(position);
-        Bitmap bitmap = BitmapFactory.decodeFile(string, options);
-        holder.imageView.setImageBitmap(bitmap);
+        string = "file://" + string;
+        imageLoader.displayImage(string, holder.imageView);
         return view;
     }
 
