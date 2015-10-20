@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.supertask.DisplayImageAdapter;
 import com.supertask.DisplayImageLoader;
@@ -26,6 +27,7 @@ public class AllShirtPantFragment extends Fragment implements LoaderManager.Load
     private GridView imageGridView;
     private List<String> pathOfImageFiles;
     private DisplayImageAdapter displayImageAdapter;
+    private TextView displayMessage;
 
     private Integer position;
 
@@ -37,6 +39,8 @@ public class AllShirtPantFragment extends Fragment implements LoaderManager.Load
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_all_shirt_pant, container, false);
         imageGridView = (GridView) view.findViewById(R.id.images_grid_view);
+        displayMessage = (TextView) view.findViewById(R.id.all_items_text_view);
+        displayMessage.setText("No items found");
         pathOfImageFiles = new ArrayList<>();
         position = getArguments().getInt(ARG_POSITION);
         return view;
@@ -61,6 +65,7 @@ public class AllShirtPantFragment extends Fragment implements LoaderManager.Load
         for (String path : paths)
             pathOfImageFiles.add(path);
         displayImageAdapter.notifyDataSetChanged();
+        displayMessage.setText("Number of items found: " + paths.size());
 
     }
 

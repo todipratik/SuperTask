@@ -3,10 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/all_items_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:gravity="center_horizontal"
+        android:padding="3dp"
+        android:text="New Text" />
+
     <GridView
         android:id="@+id/images_grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/all_items_text_view"
         android:layout_margin="3dp"
         android:numColumns="2"
         android:padding="5dp"></GridView>

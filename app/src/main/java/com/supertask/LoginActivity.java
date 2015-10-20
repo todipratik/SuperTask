@@ -36,6 +36,7 @@ public class LoginActivity extends Activity {
                 if (currentAccessToken != null) {
                     Intent i = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(i);
+                    finish();
                 }
             }
         };
@@ -49,6 +50,7 @@ public class LoginActivity extends Activity {
                 Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
+                finish();
             }
 
             @Override

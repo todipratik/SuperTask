@@ -257,6 +257,8 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
                 .discCacheFileNameGenerator(new Md5FileNameGenerator())
                 .tasksProcessingOrder(QueueProcessingType.LIFO).build();
         imageLoader.init(config);
+        shirtPath = "";
+        pantPath = "";
         if (sharedPreferences.getBoolean(Util.KEY_SHIRT_PRESENT, false)) {
             shirtPath = sharedPreferences.getString(Util.KEY_SHIRT_PATH, "");
             Log.d(TAG, shirtPath);
