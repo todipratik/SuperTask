@@ -50,6 +50,15 @@
         android:src="@drawable/bookmark"
         android:visibility="gone" />
 
+    <ImageView
+        android:id="@+id/dislike"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignTop="@id/today_choice_image_view"
+        android:layout_toLeftOf="@id/bookmark"
+        android:src="@drawable/dislike"
+        android:visibility="gone" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

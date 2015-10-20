@@ -105,6 +105,7 @@ public class BookmarkDbHelper extends SQLiteOpenHelper {
         );
         if (cursor.getCount() == 0)
             return 0;
+        cursor.moveToFirst();
         return cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_BOOKMARK_ID));
     }
 }

@@ -58,6 +58,7 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
     private ImageView todayShirtImageView;
     private ImageView todayPantImageView;
     private ImageView bookmark;
+    private ImageView dislike;
     private ImageLoader imageLoader;
 
     private String shirtPath;
@@ -77,12 +78,14 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
         todayShirtImageView = (ImageView) view.findViewById(R.id.today_shirt_image_view);
         todayPantImageView = (ImageView) view.findViewById(R.id.today_pant_image_view);
         bookmark = (ImageView) view.findViewById(R.id.bookmark);
+        dislike = (ImageView) view.findViewById(R.id.dislike);
 
         addShirtFromGallery.setOnClickListener(this);
         addPantFromGallery.setOnClickListener(this);
         clickImageOfShirt.setOnClickListener(this);
         clickImageOfPant.setOnClickListener(this);
         bookmark.setOnClickListener(this);
+        dislike.setOnClickListener(this);
 
         return view;
     }
@@ -143,6 +146,11 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
                     bookmark.setBackgroundResource(R.color.yellow);
                 }
                 editor.commit();
+                break;
+            case R.id.dislike:
+                Util.setImageChoiceForToday(getActivity());
+                displayImageChoiceForToday();
+                bookmark.setBackgroundResource(android.R.color.transparent);
                 break;
         }
 
@@ -261,6 +269,7 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
         }
         if (!shirtPath.equals("") && !pantPath.equals("")) {
             bookmark.setVisibility(View.VISIBLE);
+            dislike.setVisibility(View.VISIBLE);
             if (sharedPreferences.getBoolean(Util.KEY_BOOKMARKED, false)) {
                 bookmark.setBackgroundResource(R.color.yellow);
             }
