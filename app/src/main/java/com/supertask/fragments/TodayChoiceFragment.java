@@ -20,6 +20,11 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.supertask.Bookmark;
 import com.supertask.BookmarkDbHelper;
 import com.supertask.R;
@@ -53,7 +58,7 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
     private ImageView todayShirtImageView;
     private ImageView todayPantImageView;
     private ImageView bookmark;
-    private BitmapFactory.Options options;
+    private ImageLoader imageLoader;
 
     private String shirtPath;
     private String pantPath;
@@ -217,16 +222,25 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
 
     private void displayImageChoiceForToday() {
         todayChoiceMessageTextView.setText(R.string.today_choice_message);
-        options = new BitmapFactory.Options();
-        options.inSampleSize = 16;
-        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        imageLoader = ImageLoader.getInstance();
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
+                getActivity()).threadPriority(Thread.NORM_PRIORITY - 2)
+                .denyCacheImageMultipleSizesInMemory()
+                .defaultDisplayImageOptions(options)
+                .discCacheFileNameGenerator(new Md5FileNameGenerator())
+                .tasksProcessingOrder(QueueProcessingType.LIFO).build();
+        imageLoader.init(config);
         if (sharedPreferences.getBoolean(Util.KEY_SHIRT_PRESENT, false)) {
             shirtPath = sharedPreferences.getString(Util.KEY_SHIRT_PATH, "");
             Log.d(TAG, shirtPath);
             todayShirtTextView.setVisibility(View.INVISIBLE);
             todayShirtImageView.setVisibility(View.VISIBLE);
-            Bitmap bitmap = BitmapFactory.decodeFile(shirtPath, options);
-            todayShirtImageView.setImageBitmap(bitmap);
+            imageLoader.displayImage("file://" + shirtPath, todayShirtImageView);
         } else {
             todayShirtImageView.setVisibility(View.INVISIBLE);
             bookmark.setVisibility(View.GONE);
@@ -238,8 +252,7 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
             Log.d(TAG, pantPath);
             todayPantTextView.setVisibility(View.INVISIBLE);
             todayPantImageView.setVisibility(View.VISIBLE);
-            Bitmap bitmap = BitmapFactory.decodeFile(pantPath, options);
-            todayPantImageView.setImageBitmap(bitmap);
+            imageLoader.displayImage("file://" + pantPath, todayPantImageView);
         } else {
             todayPantImageView.setVisibility(View.INVISIBLE);
             bookmark.setVisibility(View.GONE);
