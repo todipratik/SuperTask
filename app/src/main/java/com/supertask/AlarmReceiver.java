@@ -15,11 +15,12 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "Alarm Received");
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             // set the alarm again
+            Log.d(TAG, "From reboot");
             Util.setAlarm(context);
         } else if (intent.getAction().equals(ACTION_FOR_ALARM_PENDING_INTENT)) {
+            Log.d(TAG, "From pending intent");
             Util.setImageChoiceForToday(context);
         }
     }
