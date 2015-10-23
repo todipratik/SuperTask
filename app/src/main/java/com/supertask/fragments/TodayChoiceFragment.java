@@ -151,9 +151,9 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
                 editor.commit();
                 break;
             case R.id.dislike:
+                bookmark.setBackgroundResource(android.R.color.transparent);
                 Util.setImageChoiceForToday(getActivity());
                 displayImageChoiceForToday();
-                bookmark.setBackgroundResource(android.R.color.transparent);
                 break;
             case R.id.share:
                 ArrayList<Uri> imageUris = new ArrayList<Uri>();
