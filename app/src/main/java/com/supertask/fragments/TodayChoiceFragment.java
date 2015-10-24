@@ -210,7 +210,8 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
         }
         // if the result was OK, set the alarm
         if (resultCode == Activity.RESULT_OK) {
-            Util.setAlarm(getActivity());
+            if (!Util.isAlarmSet(getActivity()))
+                Util.setAlarm(getActivity());
             Boolean shirtIsToBeSet = !sharedPreferences.getBoolean(Util.KEY_SHIRT_PRESENT, false) &&
                     (requestCode == REQUEST_TAKE_PHOTO_SHIRT || requestCode == RESULT_LOAD_SHIRT_IMAGE);
             Boolean pantIsToBeSet = !sharedPreferences.getBoolean(Util.KEY_PANT_PRESENT, false) &&

@@ -160,14 +160,24 @@ public class Util {
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.setAction(AlarmReceiver.ACTION_FOR_ALARM_PENDING_INTENT);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-        // Set the alarm to start at approximately 1:00 AM.
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 1234, intent, 0);
+        // Set the alarm to start at approximately 1:00 AM next day
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
+        // set to tomorrow
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        // set time for tomorrow
         calendar.set(Calendar.HOUR_OF_DAY, 1);
+        calendar.set(Calendar.MINUTE, 0);
         alarmMgr.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, alarmIntent);
         return;
+    }
+
+    public static Boolean isAlarmSet(Context context) {
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.setAction(AlarmReceiver.ACTION_FOR_ALARM_PENDING_INTENT);
+        Boolean isSet = (PendingIntent.getBroadcast(context, 1234, intent, PendingIntent.FLAG_NO_CREATE) != null);
+        return isSet;
     }
 
 }
