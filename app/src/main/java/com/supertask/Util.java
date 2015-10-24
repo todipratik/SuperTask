@@ -83,6 +83,36 @@ public class Util {
         return pathOfImageFiles;
     }
 
+    public static void setShirtForToday(Context context) {
+        List<String> shirts = getAllShirtPaths(context);
+        if (shirts.size() == 0)
+            return;
+        String shirtPath = "";
+        SharedPreferences sharedPreferences = getSharedPrefsObject(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Integer randomNumber = randomNumber(0, shirts.size() - 1);
+        shirtPath = shirts.get(randomNumber);
+        editor.putBoolean(KEY_SHIRT_PRESENT, true);
+        editor.putString(KEY_SHIRT_PATH, shirtPath);
+        editor.commit();
+        return;
+    }
+
+    public static void setPantForToday(Context context) {
+        List<String> pants = getAllPantPaths(context);
+        if (pants.size() == 0)
+            return;
+        String pantPath = "";
+        SharedPreferences sharedPreferences = getSharedPrefsObject(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Integer randomNumber = randomNumber(0, pants.size() - 1);
+        pantPath = pants.get(randomNumber);
+        editor.putBoolean(KEY_PANT_PRESENT, true);
+        editor.putString(KEY_PANT_PATH, pantPath);
+        editor.commit();
+        return;
+    }
+
     public static void setImageChoiceForToday(Context context) {
         List<String> shirts = getAllShirtPaths(context);
         List<String> pants = getAllPantPaths(context);

@@ -41,9 +41,10 @@ import java.util.ArrayList;
  */
 public class TodayChoiceFragment extends Fragment implements View.OnClickListener {
 
-    static final int REQUEST_TAKE_PHOTO = 1;
+    static final int REQUEST_TAKE_PHOTO_SHIRT = 1;
     static final int RESULT_LOAD_SHIRT_IMAGE = 2;
     static final int RESULT_LOAD_PANT_IMAGE = 3;
+    static final int REQUEST_TAKE_PHOTO_PANT = 4;
 
     private static final String TAG = "TodayChoiceFragment";
 
@@ -121,11 +122,11 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
                 floatingActionsMenu.collapse();
                 break;
             case R.id.click_photo_shirt:
-                dispatchTakePictureIntent(Util.getFileNameForShirt());
+                dispatchTakePictureIntent(Util.getFileNameForShirt(), REQUEST_TAKE_PHOTO_SHIRT);
                 floatingActionsMenu.collapse();
                 break;
             case R.id.click_photo_pant:
-                dispatchTakePictureIntent(Util.getFileNameForPant());
+                dispatchTakePictureIntent(Util.getFileNameForPant(), REQUEST_TAKE_PHOTO_PANT);
                 floatingActionsMenu.collapse();
                 break;
             case R.id.bookmark:
@@ -172,7 +173,7 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+        if ((requestCode == REQUEST_TAKE_PHOTO_SHIRT || requestCode == REQUEST_TAKE_PHOTO_PANT) && resultCode == Activity.RESULT_OK) {
             Toast.makeText(getActivity(), "Image saved successfully", Toast.LENGTH_LONG).show();
         } else if ((requestCode == RESULT_LOAD_SHIRT_IMAGE || requestCode == RESULT_LOAD_PANT_IMAGE) && resultCode == Activity.RESULT_OK && data != null) {
             Uri selectedImage = data.getData();
@@ -210,16 +211,26 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
         // if the result was OK, set the alarm
         if (resultCode == Activity.RESULT_OK) {
             Util.setAlarm(getActivity());
+            Boolean shirtIsToBeSet = !sharedPreferences.getBoolean(Util.KEY_SHIRT_PRESENT, false) &&
+                    (requestCode == REQUEST_TAKE_PHOTO_SHIRT || requestCode == RESULT_LOAD_SHIRT_IMAGE);
+            Boolean pantIsToBeSet = !sharedPreferences.getBoolean(Util.KEY_PANT_PRESENT, false) &&
+                    (requestCode == REQUEST_TAKE_PHOTO_PANT || requestCode == RESULT_LOAD_PANT_IMAGE);
             if (sharedPreferences == null)
                 Util.getSharedPrefsObject(getActivity());
             if (!sharedPreferences.getBoolean(Util.KEY_CHOICE_SET, false)) {
                 Util.setImageChoiceForToday(getActivity());
                 displayImageChoiceForToday();
+            } else if (shirtIsToBeSet) {
+                Util.setShirtForToday(getActivity());
+                displayImageChoiceForToday();
+            } else if (pantIsToBeSet) {
+                Util.setPantForToday(getActivity());
+                displayImageChoiceForToday();
             }
         }
     }
 
-    private void dispatchTakePictureIntent(String imageFileName) {
+    private void dispatchTakePictureIntent(String imageFileName, Integer requestCode) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             File photoFile = null;
@@ -231,7 +242,7 @@ public class TodayChoiceFragment extends Fragment implements View.OnClickListene
             if (photoFile != null) {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                         Uri.fromFile(photoFile));
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                startActivityForResult(takePictureIntent, requestCode);
             }
         }
     }
